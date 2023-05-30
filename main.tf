@@ -144,3 +144,57 @@ module "security_group_public" {
     },
   ]
 }
+
+resource "aws_cloudwatch_metric_alarm" "read_iops_alarm" {
+  alarm_name          = "RDS-Read-IOPS-${module.db.db_instance_id}"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "ReadIOPS"
+  namespace           = "AWS/RDS"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = "1000"
+  alarm_description   = "This metric checks if the read IOPS of the RDS database exceed 1000."
+
+  dimensions = {
+    DBInstanceIdentifier = module.db.db_instance_id
+  }
+
+  alarm_actions = [module.db.db_instance_arn]
+}
+
+resource "aws_cloudwatch_metric_alarm" "write_iops_alarm" {
+  alarm_name          = "RDS-Write-IOPS-${module.db.db_instance_id}"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "WriteIOPS"
+  namespace           = "AWS/RDS"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = "1000"
+  alarm_description   = "This metric checks if the write IOPS of the RDS database exceed 1000."
+
+  dimensions = {
+    DBInstanceIdentifier = module.db.db_instance_id
+  }
+
+  alarm_actions = [module.db.db_instance_arn]
+}
+
+resource "aws_cloudwatch_metric_alarm" "cpu_usage_alarm" {
+  alarm_name          = "RDS-CPU-Usage-${module.db.db_instance_id}"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/RDS"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = "80"
+  alarm_description   = "This metric checks if the CPU usage of the RDS database exceeds 80%."
+
+  dimensions = {
+    DBInstanceIdentifier = module.db.db_instance_id
+  }
+
+  alarm_actions = [module.db.db_instance_arn]
+}
